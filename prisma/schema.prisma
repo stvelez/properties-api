@@ -1,0 +1,280 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Cities {
+  cityId        Int          @id @unique(map: "cityId")
+  city          String       @db.VarChar(255)
+  idDepartament Int
+  departament   String       @db.VarChar(255)
+  region        String       @db.VarChar(255)
+  Departaments  Departaments @relation(fields: [idDepartament], references: [idDepartament], onDelete: NoAction, onUpdate: NoAction, map: "Cities_ibfk_1")
+  Properties    Properties[]
+
+  @@index([idDepartament], map: "departamento_id")
+}
+
+model CommentsProperties {
+  commentId  Int      @id @default(autoincrement())
+  propertyId Int
+  name       String   @db.VarChar(50)
+  comment    String   @db.VarChar(255)
+  score      Int      @default(5) @db.TinyInt
+  createdAt  DateTime @default(now()) @db.DateTime(0)
+  stateId    Int
+
+  @@index([propertyId], map: "propertyId")
+}
+
+model ConfigHomeVideos {
+  id        Int     @id @default(autoincrement())
+  title     String  @db.VarChar(150)
+  idUrl     String  @db.VarChar(50)
+  thumbnail String  @db.VarChar(255)
+  cityId    Int?
+  state     Boolean
+}
+
+model ContactManagement {
+  id             Int      @id @default(autoincrement())
+  idStateContact Int
+  observations   String   @db.Text
+  managedBy      Int
+  createdAt      DateTime @default(now()) @db.DateTime(0)
+  updatedAt      DateTime @default(now()) @db.DateTime(0)
+  contactMeId    Int
+
+  @@index([idStateContact], map: "idStateContact")
+}
+
+model Contactme {
+  id            Int           @id @default(autoincrement())
+  email         String        @db.VarChar(255)
+  stateId       Int           @default(1)
+  createdAt     DateTime      @default(now()) @db.DateTime(0)
+  updatedAt     DateTime      @default(now()) @db.DateTime(0)
+  contactDate   DateTime      @default(now()) @db.DateTime(0)
+  firstName     String?       @db.VarChar(255)
+  lastName      String?       @db.VarChar(255)
+  message       String?       @db.Text
+  idProperty    Int
+  StatesContact StatesContact @relation(fields: [stateId], references: [stateId], onDelete: NoAction, onUpdate: NoAction, map: "Contactme_ibfk_1")
+
+  @@index([idProperty], map: "idProperty")
+  @@index([stateId], map: "stateId")
+}
+
+model Departaments {
+  idDepartament Int      @id
+  departament   String   @db.VarChar(255)
+  Cities        Cities[]
+}
+
+model Offer {
+  offerId     Int          @id @default(autoincrement())
+  slug        String       @db.VarChar(40)
+  offer       String       @db.VarChar(100)
+  description String?      @db.VarChar(255)
+  createdAt   DateTime     @default(now()) @db.DateTime(0)
+  updateAt    DateTime     @default(now()) @db.DateTime(0)
+  state       Boolean      @default(true)
+  Properties  Properties[]
+}
+
+model Profile {
+  id        Int      @id @default(autoincrement())
+  phone     Int?
+  cellPhone Int?
+  idCity    Int      @default(1)
+  whatsapp  String?  @db.VarChar(20)
+  createdAt DateTime @default(now()) @db.DateTime(0)
+  updatedAt DateTime @default(now()) @db.DateTime(0)
+  createdBy Int
+  idUser    Int
+  state     Int      @default(1)
+  Users     Users[]
+}
+
+model Properties {
+  id                       Int                       @id @default(autoincrement())
+  title                    String                    @db.VarChar(255)
+  description              String                    @db.Text
+  price                    Int                       @default(0)
+  address                  String                    @db.VarChar(255)
+  building                 String?                   @db.VarChar(155)
+  contactName              String?                   @db.VarChar(100)
+  contactEmail             String?                   @db.VarChar(155)
+  contactPhone             String?                   @db.VarChar(40)
+  contactCellphone         String?                   @db.VarChar(12)
+  antiquityYears           Int                       @default(1)
+  lastAdminprice           Int                       @default(0)
+  neighborhood             String                    @db.VarChar(155)
+  propertyTypeId           Int?
+  offerId                  Int?                      @default(1)
+  area                     Int                       @default(0)
+  stratum                  Int                       @default(0)
+  bedrooms                 Int                       @default(0)
+  elevators                Int                       @default(0)
+  floor                    Int                       @default(1)
+  bathrooms                Int                       @default(0)
+  garage                   Int                       @default(0)
+  parking                  Int                       @default(1)
+  remodelation             Int                       @default(0)
+  latitude                 Decimal?                  @db.Decimal(10, 8)
+  longitude                Decimal?                  @db.Decimal(11, 8)
+  idAgent                  Int                       @default(1)
+  idPropertyContractStatus Int                       @default(1)
+  createdById              Int
+  createdAt                DateTime                  @default(now()) @db.DateTime(0)
+  updateAt                 DateTime                  @default(now()) @db.DateTime(0)
+  saleOff                  Int                       @default(0)
+  cityId                   Int?
+  stateId                  Int?                      @default(2)
+  agent                    Users                     @relation("Properties_idAgentToUsers", fields: [idAgent], references: [idUser], onDelete: NoAction, onUpdate: NoAction, map: "agent")
+  propertyType             PropertyTypes?            @relation(fields: [propertyTypeId], references: [propertyTypeId], onDelete: NoAction, onUpdate: NoAction, map: "category")
+  city                     Cities?                   @relation(fields: [cityId], references: [cityId], onDelete: NoAction, onUpdate: NoAction, map: "city")
+  PropertyContractStatus   PropertyContractStatus    @relation(fields: [idPropertyContractStatus], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "contractStatus")
+  createby                 Users                     @relation("Properties_createdByIdToUsers", fields: [createdById], references: [idUser], onDelete: NoAction, onUpdate: NoAction, map: "createdBy")
+  offer                    Offer?                    @relation(fields: [offerId], references: [offerId], onDelete: NoAction, onUpdate: NoAction, map: "offer")
+  StatesProperty           StatesProperty?           @relation(fields: [stateId], references: [stateId], onDelete: NoAction, onUpdate: NoAction, map: "state")
+  propertyCharacteristics  PropertyCharacteristics[]
+  PropertyImage            PropertyImage[]
+
+  @@index([idAgent], map: "agent")
+  @@index([propertyTypeId], map: "category")
+  @@index([cityId], map: "city")
+  @@index([createdById], map: "createdBy")
+  @@index([offerId], map: "offer")
+  @@index([stateId], map: "stateId")
+  @@index([idPropertyContractStatus], map: "contractStatus")
+}
+
+model PropertyImage {
+  id         Int        @id @default(autoincrement())
+  name       String     @db.VarChar(255)
+  url        String     @db.VarChar(255)
+  thumbnail  Int?
+  idProperty Int
+  createdAt  DateTime   @default(now()) @db.DateTime(0)
+  Properties Properties @relation(fields: [idProperty], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "images")
+
+  @@index([idProperty], map: "images")
+}
+
+model PropertyTypes {
+  propertyTypeId Int          @id @default(autoincrement())
+  propertyType   String       @db.VarChar(255)
+  stateId        Int          @default(1)
+  createdAt      DateTime     @db.DateTime(0)
+  Properties     Properties[]
+}
+
+model Roles {
+  idRole    Int      @id @default(autoincrement())
+  role      String   @db.VarChar(80)
+  state     Int      @default(1)
+  createdAt DateTime @default(now()) @db.DateTime(0)
+  updatedAt DateTime @default(now()) @db.DateTime(0)
+  Users     Users[]
+}
+
+model StatesContact {
+  stateId      Int         @id @default(autoincrement())
+  state        String      @db.VarChar(55)
+  observations String?     @db.VarChar(255)
+  createdAt    DateTime    @default(now()) @db.DateTime(0)
+  updatedAt    DateTime    @default(now()) @db.DateTime(0)
+  Contactme    Contactme[]
+}
+
+model StatesProperty {
+  stateId     Int          @id @default(autoincrement())
+  state       String       @db.VarChar(80)
+  description String       @db.VarChar(100)
+  Properties  Properties[]
+}
+
+model Subscriptions {
+  suscriptionId Int      @id @default(autoincrement())
+  email         String   @unique(map: "email") @db.VarChar(100)
+  firstName     String?  @db.VarChar(100)
+  lastName      String?  @db.VarChar(100)
+  createdAt     DateTime @default(now()) @db.DateTime(0)
+  updateAt      DateTime @default(now()) @db.DateTime(0)
+  state         Int
+}
+
+model Users {
+  idUser                                   Int          @id @default(autoincrement())
+  firstName                                String       @db.VarChar(100)
+  lastName                                 String       @db.VarChar(100)
+  email                                    String       @unique(map: "email") @db.VarChar(255)
+  idRole                                   Int          @default(4)
+  idProfile                                Int          @default(1)
+  password                                 String       @db.Text
+  token                                    String?      @db.Text
+  confirmed                                Int          @default(0)
+  observations                             String?      @db.VarChar(255)
+  state                                    Boolean      @default(true)
+  createdAt                                DateTime     @default(now()) @db.DateTime(0)
+  updatedAt                                DateTime     @default(now()) @db.DateTime(0)
+  Properties_Properties_idAgentToUsers     Properties[] @relation("Properties_idAgentToUsers")
+  Properties_Properties_createdByIdToUsers Properties[] @relation("Properties_createdByIdToUsers")
+  Profile                                  Profile      @relation(fields: [idProfile], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "profile")
+  Roles                                    Roles        @relation(fields: [idRole], references: [idRole], onDelete: NoAction, onUpdate: NoAction, map: "role")
+
+  @@index([idProfile], map: "profile")
+  @@index([idRole], map: "role")
+}
+
+model PropertyContractStatus {
+  id         Int          @id @default(autoincrement())
+  name       String       @db.VarChar(30)
+  slug       String       @db.VarChar(30)
+  createdAt  DateTime     @db.DateTime(0)
+  updatedAt  DateTime     @default(now()) @db.DateTime(0)
+  stateId    Int          @default(1)
+  Properties Properties[]
+}
+
+model PropertyCharacteristics {
+  id          Int        @id @default(autoincrement())
+  slug        String     @db.VarChar(30)
+  name        String     @db.VarChar(30)
+  description String?    @db.VarChar(100)
+  idProperty  Int
+  createdAt   DateTime   @db.DateTime(0)
+  updatedAt   DateTime   @default(now()) @db.DateTime(0)
+  idState     Int        @default(1)
+  Properties  Properties @relation(fields: [idProperty], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "property")
+
+  @@index([idProperty], map: "property")
+}
+
+model Agents {
+  id          String   @id @db.VarChar(64)
+  email       String   @db.VarChar(80)
+  user        String   @db.VarChar(20)
+  agentRoleID Int
+  password    String   @db.VarChar(64)
+  createdAt   DateTime @db.DateTime(0)
+  updatedAt   DateTime @default(now()) @db.DateTime(0)
+  stateId     Int      @default(1)
+  token       String   @db.Text
+  confirm     Int      @default(0) @db.TinyInt
+}
+
+model Client {
+  id          String   @id @db.VarChar(64)
+  document    String   @db.VarChar(20)
+  name        String   @db.VarChar(80)
+  description String   @db.VarChar(255)
+  createdAt   DateTime @db.DateTime(0)
+  updatedAt   DateTime @default(now()) @db.DateTime(0)
+  stateId     Int
+}
