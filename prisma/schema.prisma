@@ -138,10 +138,10 @@ model Properties {
   agent                    Users                     @relation("Properties_idAgentToUsers", fields: [idAgent], references: [idUser], onDelete: NoAction, onUpdate: NoAction, map: "agent")
   propertyType             PropertyTypes?            @relation(fields: [propertyTypeId], references: [propertyTypeId], onDelete: NoAction, onUpdate: NoAction, map: "category")
   city                     Cities?                   @relation(fields: [cityId], references: [cityId], onDelete: NoAction, onUpdate: NoAction, map: "city")
-  PropertyContractStatus   PropertyContractStatus    @relation(fields: [idPropertyContractStatus], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "contractStatus")
+  propertyContractStatus   PropertyContractStatus    @relation(fields: [idPropertyContractStatus], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "contractStatus")
   createby                 Users                     @relation("Properties_createdByIdToUsers", fields: [createdById], references: [idUser], onDelete: NoAction, onUpdate: NoAction, map: "createdBy")
   offer                    Offer?                    @relation(fields: [offerId], references: [offerId], onDelete: NoAction, onUpdate: NoAction, map: "offer")
-  StatesProperty           StatesProperty?           @relation(fields: [stateId], references: [stateId], onDelete: NoAction, onUpdate: NoAction, map: "state")
+  stateProperty            StatesProperty?           @relation(fields: [stateId], references: [stateId], onDelete: NoAction, onUpdate: NoAction, map: "state")
   propertyCharacteristics  PropertyCharacteristics[]
   PropertyImage            PropertyImage[]
 
