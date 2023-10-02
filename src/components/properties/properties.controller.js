@@ -4,7 +4,6 @@ const prisma = new PrismaClient();
 
 export const getAllProperties = async (req, res) => {
   const { query } = req;
-  console.log(query);   
 
   const minPrice = req.query.minPrice ? parseInt(req.query.minPrice) : undefined;
   const maxPrice = req.query.maxPrice ? parseInt(req.query.maxPrice) : undefined;
@@ -93,6 +92,7 @@ export const getAllProperties = async (req, res) => {
 
 export const getpropertyById = async (req, res) => {
   const { id } = req.params;
+
   try {
     const property = await prisma.properties.findUnique({
       where: {
@@ -108,6 +108,21 @@ export const getpropertyById = async (req, res) => {
       },
     });
     res.json(property);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const createProperty = async (req, res) => {
+  const { body } = req;
+console.log(body)
+  try {
+/*       const property = await prisma.properties.create({
+        data: {
+          ...body,
+        },
+      }); */
+    res.json('property');
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
