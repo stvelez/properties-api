@@ -1,8 +1,9 @@
 import express from "express";
-import { createAgent, getAllAgents } from "./agents.controller.js";
+import { createAgent, deleteAgentPermanent, getAllAgents } from "./agents.controller.js";
 const router = express.Router();
 
 router.route("/").get(getAllAgents).post(createAgent)
+router.route("/delete-permanent/:id").delete(deleteAgentPermanent)
 
 
 export default router;

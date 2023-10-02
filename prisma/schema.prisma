@@ -257,15 +257,15 @@ model PropertyCharacteristics {
 }
 
 model Agents {
-  id          String   @id @db.VarChar(64)
+  id          String   @id @default(uuid()) @db.VarChar(64)
   email       String   @db.VarChar(80)
   user        String   @db.VarChar(20)
-  agentRoleID Int
+  agentRoleId Int
   password    String   @db.VarChar(64)
-  createdAt   DateTime @db.DateTime(0)
+  createdAt   DateTime @default(now()) @db.DateTime(0)
   updatedAt   DateTime @default(now()) @db.DateTime(0)
   stateId     Int      @default(1)
-  token       String   @db.Text
+  token       String?  @db.Text
   confirm     Int      @default(0) @db.TinyInt
 }
 

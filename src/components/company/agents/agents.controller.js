@@ -18,16 +18,38 @@ export const getAllAgents = async (req, res) => {
 };
 
 export const createAgent = async (req, res) => {
-  const { body } = req;
-  console.log(body);
-
   try {
-/*     const agent = await prisma.agents.create({
-      data: {
-        ...body,
+    const user = req.body;
+    console.log(user);
+    /*     const userExist = await prisma.agents.findUnique({
+      where: {
+        email: user.email,
       },
-    }); */
-    res.json('agent');
+    });
+
+    console.log(userExist); */
+    const agent = await prisma.agents.create({
+      data: {
+        ...user,
+        agentRoleId: parseInt(user.agentRoleId),
+      },
+    });
+    res.json(agent);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const deleteAgentPermanent = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const agent = await prisma.agents.delete({
+      where: {
+        id,
+      },
+    });
+    res.json(agent)
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
