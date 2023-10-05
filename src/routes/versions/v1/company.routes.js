@@ -5,6 +5,7 @@ import offerTypesRoutes from "../../../components/company/offerTypes/routes.js";
 import stratumsRouters from "../../../components/company/stratums/routes.js";
 import neighborhoodsRoutes  from "../../../components/company/neighborhoods/routes.js";
 import propertyCharacteristicsRoutes from "../../../components/company/propertyCharacteristics/routes.js";
+import citiesRoutes from "../../../components/company/cities/routes.js";
 
 const routes = express.Router();
 
@@ -14,5 +15,6 @@ routes.use("/offer-types", offerTypesRoutes);
 routes.use("/stratums", stratumsRouters);
 routes.use("/neighborhoods", neighborhoodsRoutes);
 routes.use("/property-characteristics", propertyCharacteristicsRoutes)
+routes.use("/cities",citiesRoutes)
 
 export default routes;
