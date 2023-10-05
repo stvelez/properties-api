@@ -76,7 +76,7 @@ model Departaments {
 }
 
 model Offer {
-  offerId     Int          @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   slug        String       @db.VarChar(40)
   offer       String       @db.VarChar(100)
   description String?      @db.VarChar(255)
@@ -136,11 +136,11 @@ model Properties {
   cityId                   Int?
   stateId                  Int?                      @default(2)
   agent                    Users                     @relation("Properties_idAgentToUsers", fields: [idAgent], references: [idUser], onDelete: NoAction, onUpdate: NoAction, map: "agent")
-  propertyType             PropertyTypes?            @relation(fields: [propertyTypeId], references: [propertyTypeId], onDelete: NoAction, onUpdate: NoAction, map: "category")
+  propertyType             PropertyTypes?            @relation(fields: [propertyTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "category")
   city                     Cities?                   @relation(fields: [cityId], references: [cityId], onDelete: NoAction, onUpdate: NoAction, map: "city")
   propertyContractStatus   PropertyContractStatus    @relation(fields: [idPropertyContractStatus], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "contractStatus")
   createby                 Users                     @relation("Properties_createdByIdToUsers", fields: [createdById], references: [idUser], onDelete: NoAction, onUpdate: NoAction, map: "createdBy")
-  offer                    Offer?                    @relation(fields: [offerId], references: [offerId], onDelete: NoAction, onUpdate: NoAction, map: "offer")
+  offer                    Offer?                    @relation(fields: [offerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "offer")
   stateProperty            StatesProperty?           @relation(fields: [stateId], references: [stateId], onDelete: NoAction, onUpdate: NoAction, map: "state")
   propertyCharacteristics  PropertyCharacteristics[]
   PropertyImage            PropertyImage[]
@@ -167,11 +167,12 @@ model PropertyImage {
 }
 
 model PropertyTypes {
-  propertyTypeId Int          @id @default(autoincrement())
-  propertyType   String       @db.VarChar(255)
-  stateId        Int          @default(1)
-  createdAt      DateTime     @db.DateTime(0)
-  Properties     Properties[]
+  id           Int          @id @default(autoincrement())
+  slug         String       @db.VarChar(40)
+  propertyType String       @db.VarChar(255)
+  stateId      Int          @default(1)
+  createdAt    DateTime     @db.DateTime(0)
+  Properties   Properties[]
 }
 
 model Roles {
@@ -258,8 +259,8 @@ model PropertyCharacteristics {
 
 model Agents {
   id          String   @id @default(uuid()) @db.VarChar(64)
-  email       String   @db.VarChar(80)
-  user        String   @db.VarChar(20)
+  email       String   @unique(map: "email") @db.VarChar(80)
+  userName    String   @unique(map: "user") @db.VarChar(20)
   agentRoleId Int
   password    String   @db.VarChar(64)
   createdAt   DateTime @default(now()) @db.DateTime(0)
@@ -277,4 +278,24 @@ model Client {
   createdAt   DateTime @db.DateTime(0)
   updatedAt   DateTime @default(now()) @db.DateTime(0)
   stateId     Int
+}
+
+model Stratum {
+  id          Int      @id @default(autoincrement())
+  slug        String   @db.VarChar(20)
+  stratum     String   @db.VarChar(20)
+  description String   @db.VarChar(255)
+  createdAt   DateTime @default(now()) @db.DateTime(0)
+  updatedAt   DateTime @default(now()) @db.DateTime(0)
+  stateId     Int      @default(1)
+}
+
+model Neighborhood {
+  id           Int      @id @default(autoincrement())
+  neighborhood String?  @db.VarChar(43)
+  cityId       Int
+  Latitude     String?  @db.VarChar(18)
+  Longitude    String?  @db.VarChar(18)
+  createdAt    DateTime @default(now()) @db.DateTime(0)
+  updatedAt    DateTime @default(now()) @db.DateTime(0)
 }
