@@ -27,7 +27,6 @@ export const getAllAgents = async (req, res) => {
 export const createAgent = async (req, res) => {
   try {
     const user = req.body;
-    console.log(user);
     const emailExist = await prisma.agents.findUnique({
       where: {
         email: user.email,
